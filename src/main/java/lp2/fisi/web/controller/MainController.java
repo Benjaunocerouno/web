@@ -6,6 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpSession;
+import lp2.fisi.web.model.Cliente;
 import lp2.fisi.web.service.ProductoService;
 import lp2.fisi.web.service.ServicioService;
 
@@ -38,9 +41,17 @@ public class MainController {
             @RequestParam String email,
             @RequestParam String dispositivo,
             @RequestParam String descripcion,
-            @RequestParam String fechaCita) {
+            @RequestParam String fechaCita,
+            HttpSession session) { // <--- 1. Pedimos la sesión
 
-        servicioService.procesarSolicitud(servicioId, nombre, dni, telefono, email, dispositivo, descripcion, fechaCita);
+        // 2. Intentamos obtener el cliente de la sesión
+        Cliente cliente = (Cliente) session.getAttribute("usuario");
+        Integer idCliente = (cliente != null) ? cliente.getIdCliente() : null;
+
+        // 3. Pasamos el ID al servicio
+        servicioService.procesarSolicitud(servicioId, nombre, dni, telefono, email, 
+                                          dispositivo, descripcion, fechaCita, idCliente);
+                                          
         return "redirect:/servicios?exito=true";
     }
 
@@ -51,23 +62,11 @@ public class MainController {
         return "tienda";
     }
 
-    @GetMapping("/nosotros")
-    public String nosotros() {
-        return "nosotros";
-    }
+    @GetMapping("/nosotros") public String nosotros() { return "nosotros";}
 
-    @GetMapping("/contacto")
-    public String contacto() {
-        return "contacto";
-    }
+    @GetMapping("/contacto") public String contacto() { return "contacto";}
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
+    @GetMapping("/login") public String login() { return "login";}
 
-    @GetMapping("/registro")
-    public String registro() {
-        return "registro";
-    }
+    @GetMapping("/registro") public String registro() { return "registro";}
 }

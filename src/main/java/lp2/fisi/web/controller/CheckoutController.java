@@ -6,10 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.fasterxml.jackson.core.type.TypeReference; // IMPORTANTE
-import com.fasterxml.jackson.databind.ObjectMapper;   // IMPORTANTE
+import com.fasterxml.jackson.core.type.TypeReference; 
+import com.fasterxml.jackson.databind.ObjectMapper;   
 import java.util.List;
 import java.util.Map;
+import jakarta.servlet.http.HttpSession; // Importante para recuperar la sesión del usuario
 
 // Importamos todos los modelos y repositorios necesarios
 import lp2.fisi.web.model.*;
@@ -27,7 +28,7 @@ public class CheckoutController {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private DetallePedidoRepository detallePedidoRepository; // <--- Inyectar nuevo repo
+    private DetallePedidoRepository detallePedidoRepository; 
 
     // 2. Inyectamos los repositorios de pagos
     @Autowired
@@ -41,8 +42,6 @@ public class CheckoutController {
 
     @Autowired
     private PagoTarjetaRepository pagoTarjetaRepository;
-
-
 
     @GetMapping("/checkout")
     public String mostrarCheckout(Model model) {
@@ -77,12 +76,27 @@ public class CheckoutController {
             @RequestParam(required = false) String tipoTarjeta,
             @RequestParam(required = false) String ultimosDigitos,
 
+            // Agregamos HttpSession para detectar si hay un usuario logueado
+            HttpSession session,
+
             Model model) {
 
         try {
-            // PASO 1: Crear y Guardar el Pedido Principal
-            // Esto generará un ID único en la base de datos
+            // PASO 1: Crear el objeto Pedido con los datos del formulario
             Pedido pedido = new Pedido(nombre, email, telefono, direccion, BigDecimal.valueOf(total));
+            
+            // --- LÓGICA NUEVA: ASOCIAR CLIENTE SI ESTÁ LOGUEADO ---
+            Cliente usuario = (Cliente) session.getAttribute("usuario");
+            if (usuario != null) {
+                // Si hay usuario en sesión, asignamos su ID al pedido
+                pedido.setIdCliente(usuario.getIdCliente());
+                System.out.println("✅ Pedido asociado al cliente registrado: " + usuario.getNombres());
+            } else {
+                System.out.println("ℹ️ Pedido realizado como invitado");
+            }
+            // -----------------------------------------------------
+
+            // Guardar el pedido en la BD (esto genera el ID único)
             Pedido pedidoGuardado = pedidoRepository.save(pedido);
             
             // Obtenemos el ID real generado

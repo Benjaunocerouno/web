@@ -41,36 +41,28 @@ public class ServicioService {
 
     // MÉTODO ACTUALIZADO: Ahora guarda en la base de datos
     public void procesarSolicitud(Integer servicioId, String nombre, String dni, String telefono,
-                                  String email, String dispositivo, String descripcion, String fechaCitaStr) {
-        
+                                  String email, String dispositivo, String descripcion, String fechaCitaStr,
+                                  Integer idCliente) { // <--- NUEVO PARÁMETRO
         try {
-            // 1. Convertir la fecha de String (que viene del formulario) a LocalDate
             LocalDate fechaCita = null;
             if (fechaCitaStr != null && !fechaCitaStr.isEmpty()) {
                 fechaCita = LocalDate.parse(fechaCitaStr);
             }
 
-            // 2. Crear la entidad con los datos
             SolicitudServicio solicitud = new SolicitudServicio(
-                    servicioId, 
-                    nombre, 
-                    dni, 
-                    telefono, 
-                    email, 
-                    dispositivo, 
-                    descripcion, 
-                    fechaCita
+                    servicioId, nombre, dni, telefono, email, dispositivo, descripcion, fechaCita
             );
-
-            // 3. GUARDAR EN LA BASE DE DATOS
-            solicitudRepository.save(solicitud);
             
-            System.out.println("✅ Solicitud guardada correctamente para: " + nombre);
+            // Asignamos el cliente si existe
+            if (idCliente != null) {
+                solicitud.setIdCliente(idCliente);
+            }
+
+            solicitudRepository.save(solicitud);
+            System.out.println("✅ Solicitud guardada. Cliente ID: " + idCliente);
 
         } catch (Exception e) {
-            System.err.println("❌ Error al guardar la solicitud: " + e.getMessage());
             e.printStackTrace();
-            // Aquí podrías lanzar una excepción personalizada si quisieras mostrar el error al usuario
         }
     }
 }
