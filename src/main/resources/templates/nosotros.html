@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TecnoAccesorios - Nosotros</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="icon" th:href="@{/img/logo.jpg}" type="image/x-icon">
+  
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
+          integrity="sha256-/JqT3SQfawR3S/W-2+bHaFM86BVSM1ZtJFWc04G6W/5l3/C62h4Jd66D9321g4E5g/" 
+          crossorigin="anonymous">
+  </script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a th:href="@{/}" class="brand">
+      <div class="logo"><img th:src="@{/img/logo.jpg}" alt="Logo" class="logo-img"></div>
+      <span class="brand-text">TecnoAccesorios</span>
+    </a>
+    <nav class="main-nav">
+      <a th:href="@{/}" class="nav-link">Inicio</a>
+      <a th:href="@{/servicios}" class="nav-link">Servicios</a>
+      <a th:href="@{/tienda}" class="nav-link">Tienda</a>
+      <a th:href="@{/nosotros}" class="nav-link active">Nosotros</a>
+      <a th:href="@{/contacto}" class="nav-link">Contacto</a>
+    </nav>
+    <div class="nav-actions">
+      <a th:href="@{/login}" class="nav-link-login">Ingresar</a> 
+      <a class="cta" th:href="@{/registro}">Registrarse</a> 
+    </div>
+  </div>
+</header>
+
+<main class="container page-content">
+  <h1>Sobre TecnoAccesorios</h1>
+  
+  <section class="about-us-grid">
+    <div class="about-description">
+      <h2>Nuestra Empresa</h2>
+      <p>Somos un equipo especializado en servicios de reparación para smartphones, tablets y laptops, además de ofrecer una amplia gama de accesorios tecnológicos. Con más de 5 años de experiencia en el mercado de Tarapoto, nos dedicamos a atender a nuestros clientes con honestidad, rapidez y la máxima profesionalidad.</p>
+      <p>Entendemos lo importante que es tu dispositivo en tu día a día, por eso nos esforzamos en ofrecer diagnósticos precisos y soluciones efectivas en tiempo récord.</p>
+    </div>
+    
+    <div class="about-contact-card">
+      <h3>Información de Contacto</h3>
+      <p>
+        <strong>Dirección:</strong><br>
+        Jr. Ejemplo 123, Tarapoto, San Martín
+      </p>
+      <p>
+        <strong>Teléfono:</strong><br>
+        <a href="tel:+51960805566">📞 +51 960 805 566</a>
+      </p>
+      <p>
+        <strong>Email:</strong><br>
+        <a href="mailto:TecnoAccesorios@gmail.com">📧 TecnoAccesorios@gmail.com</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="mission-vision-section">
+    <div class="mission-vision-grid">
+      <div class="mission-card">
+        <h3>Nuestra Misión</h3>
+        <p>Brindar soluciones tecnológicas integrales, rápidas y confiables, asegurando la satisfacción de nuestros clientes a través de un servicio técnico de alta calidad y productos garantizados, todo con un trato cercano y honesto.</p>
+      </div>
+      <div class="vision-card">
+        <h3>Nuestra Visión</h3>
+        <p>Ser la empresa líder y de mayor confianza en servicios y ventas de tecnología en toda la región San Martín, innovando constantemente en nuestros procesos y expandiendo nuestra gama de soluciones para adaptarnos a las futuras necesidades del mercado.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="team-section container page-content">
+    <h2>Equipo de Desarrollo</h2>
+    <div class="team-grid">
+        <div class="team-member">
+            <img th:src="@{/img/integrante1.jpg}" alt="Dyogo Azang Archenti">
+            <h4>Azang Archenti, Dyogo</h4>
+            <p>Ingeniero de Software Líder</p>
+        </div>
+        <div class="team-member">
+            <img th:src="@{/img/integrante2.jpg}" alt="Amyling Rachel Azang Vilchez">
+            <h4>Azang Vilchez, Amyling Rachel</h4>
+            <p>Especialista en Requisitos y QA</p>
+        </div>
+        <div class="team-member">
+            <img th:src="@{/img/integrante3.jpg}" alt="Ronaldiño Joanlu Espinoza Rosario">
+            <h4>Espinoza Rosario, Ronaldiño Joanlu</h4>
+            <p>Diseñador UX/UI</p>
+        </div>
+        <div class="team-member">
+            <img th:src="@{/img/integrante4.jpg}" alt="Ronaldiño Joanlu Espinoza Rosario">
+            <h4>Tantalean Rodriguez, Victor Benjamin</h4>
+            <p>Diseñador UX/UI</p>
+        </div>
+        <div class="team-member">
+            <img th:src="@{/img/integrante5.jpg}" alt="Ronaldiño Joanlu Espinoza Rosario">
+            <h4>Gomez , Lucas Leonidas</h4>
+            <p>Diseñador UX/UI</p>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a th:href="@{/}" class="brand">
+          <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios logo" class="logo-img"></div>
+          <span class="brand-text">TecnoAccesorios</span>
+        </a>
+        <p>Reparaciones y accesorios - Tarapoto</p>
+      </div>
+      <div>
+        <h4>Enlaces</h4>
+        <a th:href="@{/servicios}">Servicios</a>
+        <a th:href="@{/tienda}">Tienda</a>
+        <a th:href="@{/nosotros}">Nosotros</a>
+        <a th:href="@{/contacto}">Contacto</a>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <p>📞 +51 960 805 566</p>
+        <p>📧 TecnoAccesorios@gmail.com</p>
+      </div>
+    </div>
+    <div class="copyright">
+      © 2025 TecnoAccesorios. Todos los derechos reservados.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

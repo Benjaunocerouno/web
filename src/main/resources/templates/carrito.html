@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Carrito de Compras - TecnoAccesorios</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" th:href="@{/img/logo.jpg}" type="image/x-icon">
+</head>
+
+<body>
+<!-- HEADER - MISMAS CLASES QUE CONTACTO -->
+<header class="site-header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="brand">
+            <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios" class="logo-img"></div>
+            <span class="brand-text">TecnoAccesorios</span>
+        </a>
+
+        <nav class="main-nav">
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+            <a th:href="@{/servicios}" class="nav-link">Servicios</a>
+            <a th:href="@{/tienda}" class="nav-link">Tienda</a>
+            <a th:href="@{/nosotros}" class="nav-link">Nosotros</a>
+            <a th:href="@{/contacto}" class="nav-link">Contacto</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a th:href="@{/auth/login}" class="nav-link-login">Ingresar</a>
+            <a class="cta" th:href="@{/auth/registro}">Registrarse</a>
+        </div>
+    </div>
+</header>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container page-content">
+    <h1>Tu Carrito de Compras</h1>
+
+    <div class="cart-container">
+        <div id="cart-items-container">
+            <div class="empty-cart" id="empty-cart-message">
+                <div class="empty-icon">🛒</div>
+                <h3>Tu carrito está vacío</h3>
+                <p>Agrega algunos productos increíbles desde nuestra tienda</p>
+                <a th:href="@{/tienda}" class="cta">Ir a la Tienda</a>
+            </div>
+        </div>
+
+        <div class="cart-summary" id="cart-summary">
+            <h3>Resumen del Pedido</h3>
+
+            <div class="summary-details">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="summary-subtotal">S/ 0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Envío:</span>
+                    <span id="summary-shipping">S/ 0.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span id="summary-total">S/ 0.00</span>
+                </div>
+            </div>
+
+            <div class="checkout-actions">
+                <button class="checkout-btn" onclick="proceedToCheckout()">Finalizar Compra</button>
+                <button class="clear-cart-btn" onclick="clearCart()">Vaciar Carrito</button>
+                <a th:href="@{/tienda}" class="continue-shopping">Seguir Comprando</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- FOOTER - MISMAS CLASES QUE CONTACTO -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <a th:href="@{/}" class="brand">
+                    <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios" class="logo-img"></div>
+                    <span class="brand-text">TecnoAccesorios</span>
+                </a>
+                <p>Reparaciones y accesorios - Tarapoto</p>
+            </div>
+            <div>
+                <h4>Enlaces</h4>
+                <a th:href="@{/servicios}">Servicios</a>
+                <a th:href="@{/tienda}">Tienda</a>
+                <a th:href="@{/nosotros}">Nosotros</a>
+                <a th:href="@{/contacto}">Contacto</a>
+            </div>
+            <div>
+                <h4>Contacto</h4>
+                <p>📞 +51 960 805 566</p>
+                <p>📧 TecnoAccesorios@gmail.com</p>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 TecnoAccesorios. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/carrito.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

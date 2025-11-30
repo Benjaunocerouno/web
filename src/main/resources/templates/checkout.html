@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title th:text="${titulo}">Finalizar Compra - TecnoAccesorios</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" th:href="@{/img/logo.jpg}" type="image/x-icon">
+</head>
+
+<body>
+<!-- HEADER -->
+<header class="site-header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="brand">
+            <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios" class="logo-img"></div>
+            <span class="brand-text">TecnoAccesorios</span>
+        </a>
+
+        <nav class="main-nav">
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+            <a th:href="@{/servicios}" class="nav-link">Servicios</a>
+            <a th:href="@{/tienda}" class="nav-link">Tienda</a>
+            <a th:href="@{/nosotros}" class="nav-link">Nosotros</a>
+            <a th:href="@{/contacto}" class="nav-link">Contacto</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a th:href="@{/auth/login}" class="nav-link-login">Ingresar</a>
+            <a class="cta" th:href="@{/auth/registro}">Registrarse</a>
+        </div>
+    </div>
+</header>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container page-content">
+    <h1>Finalizar Compra</h1>
+
+    <div class="checkout-container">
+        <!-- Resumen del Pedido -->
+        <div class="order-summary">
+            <h3>Tu Pedido</h3>
+            <div id="checkout-items">
+                <!-- Los productos se cargarán con JavaScript -->
+            </div>
+            <div class="order-totals">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span id="checkout-subtotal">S/ 0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Envío:</span>
+                    <span id="checkout-shipping">S/ 0.00</span>
+                </div>
+                <div class="total-row grand-total">
+                    <strong>Total:</strong>
+                    <strong id="checkout-total">S/ 0.00</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Checkout -->
+        <div class="checkout-form">
+            <h3>Información de Envío</h3>
+            <form th:action="@{/checkout/procesar}" method="post" id="checkout-form">
+                <div class="form-group">
+                    <label for="nombre">Nombre completo *</label>
+                    <input type="text" id="nombre" name="nombre" required
+                           placeholder="Tu nombre completo">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required
+                           placeholder="tu@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Teléfono *</label>
+                    <input type="tel" id="telefono" name="telefono" required
+                           placeholder="+51 XXX XXX XXX">
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion">Dirección de envío *</label>
+                    <textarea id="direccion" name="direccion" rows="3" required
+                              placeholder="Dirección completa para el envío"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="metodoPago">Método de Pago *</label>
+                    <select id="metodoPago" name="metodoPago" required>
+                        <option value="">Selecciona método de pago</option>
+                        <option value="transferencia">Transferencia Bancaria</option>
+                        <option value="yape">Yape / Plin</option>
+                        <option value="efectivo">Pago en Efectivo</option>
+                        <option value="tarjeta">Tarjeta Crédito/Débito</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="payment-details" style="display: none;">
+                    <!-- Campos para transferencia bancaria -->
+                    <div id="transferencia-fields" style="display: none;">
+                        <h4>Datos de Transferencia</h4>
+                        <div class="form-group">
+                            <label for="bancoOrigen">Banco de Origen *</label>
+                            <input type="text" id="bancoOrigen" name="bancoOrigen"
+                                   placeholder="Ej: BCP, BBVA, Interbank">
+                        </div>
+                        <div class="form-group">
+                            <label for="bancoDestino">Banco de Destino *</label>
+                            <select id="bancoDestino" name="bancoDestino">
+                                <option value="BCP">BCP</option>
+                                <option value="BBVA">BBVA</option>
+                                <option value="INTERBANK">Interbank</option>
+                                <option value="SCOTIABANK">Scotiabank</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="numeroOperacion">Número de Operación *</label>
+                            <input type="text" id="numeroOperacion" name="numeroOperacion"
+                                   placeholder="Número de transferencia">
+                        </div>
+                        <div class="form-group">
+                            <label for="nombreRemitente">Nombre del Remitente *</label>
+                            <input type="text" id="nombreRemitente" name="nombreRemitente"
+                                   placeholder="Nombre tal como aparece en la transferencia">
+                        </div>
+                        <div class="form-group">
+                            <label for="dniRemitente">DNI del Remitente *</label>
+                            <input type="text" id="dniRemitente" name="dniRemitente"
+                                   placeholder="8 dígitos" maxlength="8">
+                        </div>
+                    </div>
+
+                    <!-- Campos para Yape -->
+                    <div id="yape-fields" style="display: none;">
+                        <h4>Datos para Yape/Plin</h4>
+                        <div class="form-group">
+                            <label for="numeroCelular">Número de Celular *</label>
+                            <input type="text" id="numeroCelular" name="numeroCelular"
+                                   placeholder="Ej: 960805566">
+                        </div>
+                        <div class="form-group">
+                            <label for="nombreRemitenteYape">Nombre del Remitente *</label>
+                            <input type="text" id="nombreRemitenteYape" name="nombreRemitenteYape"
+                                   placeholder="Tu nombre completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="dniRemitenteYape">DNI del Remitente *</label>
+                            <input type="text" id="dniRemitenteYape" name="dniRemitenteYape"
+                                   placeholder="8 dígitos" maxlength="8">
+                        </div>
+                    </div>
+
+                    <!-- Campos para Tarjeta -->
+                    <div id="tarjeta-fields" style="display: none;">
+                        <h4>Datos de Tarjeta</h4>
+                        <div class="form-group">
+                            <label for="tipoTarjeta">Tipo de Tarjeta *</label>
+                            <select id="tipoTarjeta" name="tipoTarjeta">
+                                <option value="crédito">Crédito</option>
+                                <option value="débito">Débito</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ultimosDigitos">Últimos 4 dígitos *</label>
+                            <input type="text" id="ultimosDigitos" name="ultimosDigitos"
+                                   placeholder="1234" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CAMPO OCULTO PARA EL TOTAL -->
+                <input type="hidden" id="total" name="total" value="0">
+
+                <div class="form-actions">
+                    <button type="submit" class="cta-button large">Confirmar Pedido</button>
+                    <a th:href="@{/carrito}" class="back-button">Volver al Carrito</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <a th:href="@{/}" class="brand">
+                    <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios" class="logo-img"></div>
+                    <span class="brand-text">TecnoAccesorios</span>
+                </a>
+                <p>Reparaciones y accesorios - Tarapoto</p>
+            </div>
+            <div>
+                <h4>Enlaces</h4>
+                <a th:href="@{/servicios}">Servicios</a>
+                <a th:href="@{/tienda}">Tienda</a>
+                <a th:href="@{/nosotros}">Nosotros</a>
+                <a th:href="@{/contacto}">Contacto</a>
+            </div>
+            <div>
+                <h4>Contacto</h4>
+                <p>📞 +51 960 805 566</p>
+                <p>📧 TecnoAccesorios@gmail.com</p>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 TecnoAccesorios. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/checkout.js}"></script>
+</body>
+</html>

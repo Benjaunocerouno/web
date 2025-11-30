@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>TecnoAccesorios - Tienda Online</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" th:href="@{/img/logo.jpg}" type="image/x-icon">
+</head>
+
+<body>
+<!-- HEADER - MISMAS CLASES QUE CONTACTO -->
+<header class="site-header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="brand">
+            <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios" class="logo-img"></div>
+            <span class="brand-text">TecnoAccesorios</span>
+        </a>
+
+        <nav class="main-nav">
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+            <a th:href="@{/servicios}" class="nav-link">Servicios</a>
+            <a th:href="@{/tienda}" class="nav-link active">Tienda</a>
+            <a th:href="@{/nosotros}" class="nav-link">Nosotros</a>
+            <a th:href="@{/contacto}" class="nav-link">Contacto</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a th:href="@{/auth/login}" class="nav-link-login">Ingresar</a>
+            <a class="cta" th:href="@{/auth/registro}">Registrarse</a>
+        </div>
+    </div>
+</header>
+
+<!-- BARRA DE HERRAMIENTAS -->
+<div class="store-toolbar">
+    <div class="container toolbar-content">
+        <div class="filters">
+            <label for="category-filter">Filtrar por categoría:</label>
+            <select id="category-filter">
+                <option value="todos">Todas las categorías</option>
+                <option th:each="categoria : ${categorias}"
+                        th:value="${categoria}"
+                        th:text="${categoria}">
+                </option>
+            </select>
+        </div>
+
+        <div class="cart-button-wrapper">
+            <a th:href="@{/carrito}" class="cart-button">
+                🛒 Carrito (<span id="cart-count">0</span>)
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container page-content">
+    <h1>Nuestra Tienda</h1>
+
+    <section class="product-list">
+        <div class="product-item" th:each="producto : ${productos}" th:attr="data-categoria=${producto.categoria}">
+            <div class="product-card">
+                <img th:src="@{'/img/' + ${producto.imagen}}"
+                     th:alt="${producto.nombre}"
+                     class="product-image"
+                     data-fallback="/img/producto1.jpg">
+
+                <div class="product-info">
+                    <h4 th:text="${producto.nombre}">Nombre del Producto</h4>
+
+                    <span class="product-price" th:text="|S/ ${producto.precio}|">
+                        S/ 0.00
+                    </span>
+
+                    <span class="product-stock" th:classappend="${producto.stock == 0} ? 'out-of-stock' : 'in-stock'"
+                          th:text="${producto.stock == 0} ? 'Sin stock' : |Stock: ${producto.stock}|">
+                        Stock disponible
+                    </span>
+
+                    <div class="product-description">
+                        <p th:text="${producto.descripcion}">Descripción del producto</p>
+                    </div>
+
+                    <div class="product-actions">
+                        <div class="quantity-controls">
+                            <label th:for="'qty-' + ${producto.id}">Cantidad:</label>
+                            <input type="number" value="1" min="1" th:max="${producto.stock}"
+                                   th:disabled="${producto.stock == 0}"
+                                   class="product-quantity"
+                                   th:id="|qty-${producto.id}|">
+                        </div>
+
+                        <button class="add-to-cart-btn"
+                                th:attr="data-id=${producto.id},
+                                data-name=${producto.nombre},
+                                data-price=${producto.precio},
+                                data-image=${producto.imagen},
+                                data-stock=${producto.stock}"
+                                th:disabled="${producto.stock == 0}">
+                            <span th:if="${producto.stock > 0}">Agregar al Carrito</span>
+                            <span th:unless="${producto.stock > 0}">Sin Stock</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="no-products-message" class="no-products" style="display: none;">
+            <p>No se encontraron productos en esta categoría.</p>
+            <a th:href="@{/tienda}" class="cta">Ver todos los productos</a>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER - MISMAS CLASES QUE CONTACTO -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <a th:href="@{/}" class="brand">
+                    <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios" class="logo-img"></div>
+                    <span class="brand-text">TecnoAccesorios</span>
+                </a>
+                <p>Reparaciones y accesorios - Tarapoto</p>
+            </div>
+            <div>
+                <h4>Enlaces</h4>
+                <a th:href="@{/servicios}">Servicios</a>
+                <a th:href="@{/tienda}">Tienda</a>
+                <a th:href="@{/nosotros}">Nosotros</a>
+                <a th:href="@{/contacto}">Contacto</a>
+            </div>
+            <div>
+                <h4>Contacto</h4>
+                <p>📞 +51 960 805 566</p>
+                <p>📧 TecnoAccesorios@gmail.com</p>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 TecnoAccesorios. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Filtro simple y funcional
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryFilter = document.getElementById('category-filter');
+        const productItems = document.querySelectorAll('.product-item');
+        const noProductsMessage = document.getElementById('no-products-message');
+
+        // Filtro por categoría
+        categoryFilter.addEventListener('change', function() {
+            const selectedCategory = this.value;
+            let visibleProducts = 0;
+
+            productItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-categoria');
+
+                if (selectedCategory === 'todos' || selectedCategory === itemCategory) {
+                    item.style.display = 'block';
+                    visibleProducts++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Mostrar mensaje si no hay productos
+            if (visibleProducts === 0) {
+                noProductsMessage.style.display = 'block';
+            } else {
+                noProductsMessage.style.display = 'none';
+            }
+        });
+
+        // Agregar al carrito
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.disabled) return;
+
+                const productId = this.dataset.id;
+                const productName = this.dataset.name;
+                const productPrice = this.dataset.price;
+                const productImage = this.dataset.image;
+                const quantityInput = document.getElementById(`qty-${productId}`);
+                const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+
+                // Guardar en localStorage
+                addToCart(productId, productName, productPrice, productImage, quantity);
+
+                // Mostrar confirmación
+                showNotification(`${productName} agregado al carrito`);
+
+                // Actualizar contador
+                updateCartCount();
+            });
+        });
+
+        // Manejo de errores en imágenes
+        document.querySelectorAll('.product-image').forEach(img => {
+            img.addEventListener('error', function() {
+                this.src = this.dataset.fallback || '/img/producto1.jpg';
+            });
+        });
+
+        // Actualizar contador al cargar
+        updateCartCount();
+    });
+
+    // Funciones del carrito
+    function getCart() {
+        return JSON.parse(localStorage.getItem('tecnoaccesorios_cart')) || [];
+    }
+
+    function saveCart(cart) {
+        localStorage.setItem('tecnoaccesorios_cart', JSON.stringify(cart));
+    }
+
+    function addToCart(id, name, price, image, quantity = 1) {
+        let cart = getCart();
+        const existingItem = cart.find(item => item.id === id);
+
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.push({
+                id: id,
+                name: name,
+                price: parseFloat(price),
+                image: image,
+                quantity: quantity
+            });
+        }
+
+        saveCart(cart);
+    }
+
+    function updateCartCount() {
+        const cart = getCart();
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById('cart-count').textContent = totalItems;
+    }
+
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #9B59B6;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease-out;
+        `;
+        notification.innerHTML = `✅ ${message}`;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+</script>
+
+<style>
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+</style>
+</body>
+</html>

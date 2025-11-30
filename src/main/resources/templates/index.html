@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="TecnoAccesorios - Venta de accesorios y reparación profesional de celulares en Tarapoto. Los mejores precios y garantía.">
+
+    <title>TecnoAccesorios - Accesorios y Reparación de Celulares</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" th:href="@{/img/logo.jpg}" type="image/x-icon">
+</head>
+
+<body>
+<!-- HEADER MEJORADO -->
+<header class="site-header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="brand">
+            <img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios - Logo" class="logo-img">
+            <span class="brand-text">TecnoAccesorios</span>
+        </a>
+
+        <nav class="main-nav">
+            <a th:href="@{/}" class="nav-link active">Inicio</a>
+            <a th:href="@{/tienda}" class="nav-link">Tienda</a>
+            <a th:href="@{/servicios}" class="nav-link">Servicios</a>
+            <a th:href="@{/nosotros}" class="nav-link">Nosotros</a>
+            <a th:href="@{/contacto}" class="nav-link">Contacto</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a th:href="@{/auth/login}" class="nav-link-login">Ingresar</a>
+            <a class="cta" th:href="@{/auth/registro}">Registrarse</a>
+        </div>
+    </div>
+</header>
+
+<!-- HERO SECTION MEJORADA CON BIENVENIDA -->
+<section class="hero-section">
+    <div class="container hero-content">
+        <div class="hero-text">
+            <!-- BIENVENIDA MEJORADA -->
+            <div class="welcome-message">
+                <span class="welcome-badge">🎉 ¡Bienvenido a TecnoAccesorios!</span>
+                <h1 class="hero-title">Hola, <span class="highlight">¿qué necesitas hoy?</span></h1>
+                <p class="hero-description">
+                    <strong>Nos alegra tenerte aquí</strong>. Encuentra los mejores accesorios para tu celular
+                    y servicio de reparación profesional en Tarapoto.
+                    <span class="welcome-highlight">¿En qué podemos ayudarte?</span>
+                </p>
+            </div>
+
+            <div class="hero-actions">
+                <a th:href="@{/tienda}" class="cta primary large">🛍️ Ver Accesorios</a>
+                <a th:href="@{/servicios}" class="cta secondary">🔧 Solicitar Reparación</a>
+            </div>
+
+            <!-- BENEFICIOS RÁPIDOS -->
+            <div class="quick-benefits">
+                <div class="benefit">
+                    <span class="benefit-icon">🚚</span>
+                    <span>Envío gratis S/ 50+</span>
+                </div>
+                <div class="benefit">
+                    <span class="benefit-icon">🛡️</span>
+                    <span>Garantía incluida</span>
+                </div>
+                <div class="benefit">
+                    <span class="benefit-icon">⏰</span>
+                    <span>Atención inmediata</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <img th:src="@{/img/hero-repair.jpg}" alt="Reparación profesional de celulares" loading="lazy">
+        </div>
+    </div>
+</section>
+
+<!-- ACCESORIOS DESTACADOS - PRIMERA SECCIÓN -->
+<section class="products-preview">
+    <div class="container">
+        <div class="section-header">
+            <h2>🎁 Accesorios Destacados</h2>
+            <p>Los productos más vendidos y mejor valorados por nuestros clientes</p>
+        </div>
+
+        <div class="products-horizontal-list">
+            <article class="product-card">
+                <div class="product-image">
+                    <img th:src="@{/img/producto1.jpg}" alt="Cargador Carga Rápida" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <h3>Cargador Carga Rápida</h3>
+                    <p class="product-price">S/ 25.00</p>
+                    <div class="product-features">
+                        <span>⚡ Carga rápida</span>
+                        <span>🔌 Original</span>
+                    </div>
+                    <a th:href="@{/tienda}" class="product-link">🛒 Comprar Ahora</a>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="product-image">
+                    <img th:src="@{/img/producto2.jpg}" alt="Audífonos Inalámbricos" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <h3>Audífonos Inalámbricos</h3>
+                    <p class="product-price">S/ 45.00</p>
+                    <div class="product-features">
+                        <span>🎵 Bluetooth 5.0</span>
+                        <span>🔋 20h batería</span>
+                    </div>
+                    <a th:href="@{/tienda}" class="product-link">🛒 Comprar Ahora</a>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="product-image">
+                    <img th:src="@{/img/producto3.jpg}" alt="Mica de Vidrio 9D" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <h3>Mica de Vidrio 9D</h3>
+                    <p class="product-price">S/ 12.00</p>
+                    <div class="product-features">
+                        <span>🛡️ Anti-rayones</span>
+                        <span>📱 Para todos los modelos</span>
+                    </div>
+                    <a th:href="@{/tienda}" class="product-link">🛒 Comprar Ahora</a>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="product-image">
+                    <img th:src="@{/img/producto4.jpg}" alt="Case Protector" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <h3>Case Protector</h3>
+                    <p class="product-price">S/ 18.00</p>
+                    <div class="product-features">
+                        <span>💪 Antigolpes</span>
+                        <span>🎨 Diseño elegante</span>
+                    </div>
+                    <a th:href="@{/tienda}" class="product-link">🛒 Comprar Ahora</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="section-cta">
+            <a th:href="@{/tienda}" class="cta primary large">🚀 Explorar Tienda Completa</a>
+            <p class="cta-subtext">+50 productos disponibles • Envío gratis • Garantía incluida</p>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICIOS DE REPARACIÓN - SEGUNDA SECCIÓN -->
+<section class="services-presentation">
+    <div class="container">
+        <div class="section-header">
+            <h2>🔧 Servicios de Reparación</h2>
+            <p>Soluciones técnicas especializadas para todos los modelos de celulares</p>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">📱</div>
+                <h3>Cambio de Pantalla</h3>
+                <p>Reemplazo express con pantallas originales y de alta calidad. Garantía incluida.</p>
+                <ul class="service-features">
+                    <li>✅ Pantallas originales</li>
+                    <li>✅ Calibración precisa</li>
+                    <li>✅ Garantía 3 meses</li>
+                </ul>
+                <a th:href="@{/servicios}" class="service-link">Solicitar Servicio</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔋</div>
+                <h3>Cambio de Batería</h3>
+                <p>Recupera la autonomía de tu dispositivo con baterías de alta capacidad.</p>
+                <ul class="service-features">
+                    <li>✅ Baterías certificadas</li>
+                    <li>✅ Instalación profesional</li>
+                    <li>✅ Garantía 6 meses</li>
+                </ul>
+                <a th:href="@{/servicios}" class="service-link">Solicitar Servicio</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔧</div>
+                <h3>Reparación de Placa</h3>
+                <p>Micro-soldadura y reparación de componentes electrónicos especializados.</p>
+                <ul class="service-features">
+                    <li>✅ Técnicos certificados</li>
+                    <li>✅ Equipos profesionales</li>
+                    <li>✅ Diagnóstico gratuito</li>
+                </ul>
+                <a th:href="@{/servicios}" class="service-link">Solicitar Servicio</a>
+            </div>
+        </div>
+
+        <div class="section-cta">
+            <a th:href="@{/servicios}" class="cta large">Ver Todos los Servicios</a>
+        </div>
+    </div>
+</section>
+
+<!-- POR QUÉ ELEGIRNOS -->
+<section class="why-us-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>¿Por Qué Elegir TecnoAccesorios?</h2>
+            <p>La confianza de cientos de clientes en Tarapoto</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Garantía Real</h3>
+                <p>Todos nuestros servicios incluyen garantía por escrito. Tu tranquilidad es nuestra prioridad.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Reparación Express</h3>
+                <p>La mayoría de reparaciones se completan el mismo día. Minimizamos tu tiempo sin dispositivo.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💯</div>
+                <h3>Calidad Certificada</h3>
+                <p>Usamos repuestos originales y de alta calidad. Resultados que duran en el tiempo.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Precios Justos</h3>
+                <p>Precios transparentes sin sorpresas. Cotización gratuita antes de cualquier reparación.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="final-cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>¿Listo para encontrar lo que necesitas?</h2>
+            <p>Explora nuestros accesorios o agenda tu reparación hoy mismo</p>
+            <div class="cta-actions">
+                <a th:href="@{/tienda}" class="cta primary large">🛍️ Ver Accesorios</a>
+                <a th:href="@{/servicios}" class="cta secondary">🔧 Solicitar Reparación</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER MEJORADO -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a th:href="@{/}" class="brand">
+                    <img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios logo" class="logo-img">
+                    <span class="brand-text">TecnoAccesorios</span>
+                </a>
+                <p>Reparaciones y accesorios de confianza en Tarapoto</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook">📘</a>
+                    <a href="#" aria-label="WhatsApp">💬</a>
+                    <a href="#" aria-label="Instagram">📷</a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h4>Servicios</h4>
+                <a th:href="@{/servicios}">Reparación de Pantallas</a>
+                <a th:href="@{/servicios}">Cambio de Baterías</a>
+                <a th:href="@{/servicios}">Reparación de Placa</a>
+                <a th:href="@{/servicios}">Servicio Técnico</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Enlaces</h4>
+                <a th:href="@{/}">Inicio</a>
+                <a th:href="@{/tienda}">Tienda</a>
+                <a th:href="@{/servicios}">Servicios</a>
+                <a th:href="@{/nosotros}">Nosotros</a>
+                <a th:href="@{/contacto}">Contacto</a>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <p>📍 Tarapoto, Perú</p>
+                <p>📞 +51 960 805 566</p>
+                <p>📧 TecnoAccesorios@gmail.com</p>
+                <p>🕒 Lun - Sáb: 9:00 AM - 6:00 PM</p>
+            </div>
+        </div>
+
+        <div class="copyright">
+            © 2025 TecnoAccesorios. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+</body>
+</html>

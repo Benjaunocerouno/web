@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" aria-label="Sitio web de TecnoAccesorios - Servicios de Reparación">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="TecnoAccesorios - Servicios de reparación de celulares, laptops y equipos electrónicos en Tarapoto. Reparaciones rápidas y garantizadas.">
+    <meta name="keywords" content="reparación celulares, servicio técnico, Tarapoto, reparación laptops, cambio pantallas, baterías">
+    <meta name="author" content="TecnoAccesorios">
+
+    <title>TecnoAccesorios - Servicios de Reparación</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" th:href="@{/img/logo.jpg}" type="image/x-icon">
+
+    <!-- Structured Data para SEO -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "TecnoAccesorios - Servicios de Reparación",
+            "description": "Reparación de dispositivos móviles, laptops y equipos electrónicos en Tarapoto",
+            "url": "https://tecnoaccesorios.com/servicios",
+            "telephone": "+51-960-805-566",
+            "email": "TecnoAccesorios@gmail.com",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Tarapoto",
+                "addressCountry": "PE"
+            },
+            "openingHours": "Mo-Sa 09:00-18:00"
+        }
+    </script>
+</head>
+
+<body itemscope itemtype="https://schema.org/WebPage">
+<!-- HEADER MEJORADO -->
+<header class="site-header" role="banner">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="brand" aria-label="TecnoAccesorios - Página principal">
+            <img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios - Logo" class="logo-img" itemprop="logo">
+            <span class="brand-text" itemprop="name">TecnoAccesorios</span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navegación principal" role="navigation">
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+            <a th:href="@{/servicios}" class="nav-link active" aria-current="page">Servicios</a>
+            <a th:href="@{/tienda}" class="nav-link">Tienda</a>
+            <a th:href="@{/nosotros}" class="nav-link">Nosotros</a>
+            <a th:href="@{/contacto}" class="nav-link">Contacto</a>
+        </nav>
+
+        <div class="nav-actions" role="group" aria-label="Acciones de usuario">
+            <a th:href="@{/login}" class="nav-link-login" aria-label="Iniciar sesión" id="login-link">Ingresar</a>
+            <span id="user-welcome" class="user-welcome" style="display: none;"></span>
+            <a class="cta" th:href="@{/registro}" aria-label="Crear cuenta nueva">📝 Registrarse</a>
+        </div>
+    </div>
+</header>
+
+<!-- CONTENIDO PRINCIPAL OPTIMIZADO -->
+<main class="container page-content" role="main" itemprop="mainContentOfPage">
+    <h1 itemprop="headline">Nuestros Servicios de Reparación</h1>
+    <p class="page-subtitle">Servicios técnicos especializados con garantía. Tu dispositivo en las mejores manos.</p>
+
+    <!-- SERVICIOS DINÁMICOS DESDE BASE DE DATOS -->
+    <section class="services-grid" aria-labelledby="servicios-titulo" itemscope itemtype="https://schema.org/ItemList">
+        <h2 id="servicios-titulo" class="sr-only">Catálogo de Servicios Disponibles</h2>
+
+        <div class="service-item" th:each="servicio : ${servicios}"
+             itemprop="itemListElement" itemscope itemtype="https://schema.org/Service">
+            <div class="service-card">
+                <div class="service-icon" th:text="${servicio.icono}">🔧</div>
+
+                <div class="service-info">
+                    <h3 th:text="${servicio.nombre}" itemprop="name">Nombre del Servicio</h3>
+
+                    <span class="service-price" th:text="|Desde S/ ${servicio.precio}|" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                        <meta itemprop="price" th:content="${servicio.precio}">
+                        <meta itemprop="priceCurrency" content="PEN">
+                        Desde S/ 0.00
+                    </span>
+
+                    <span class="service-duration" th:text="|⏱ ${servicio.duracion}|" itemprop="duration">
+                        ⏱ Duración estimada
+                    </span>
+
+                    <div class="service-description" itemprop="description">
+                        <p th:text="${servicio.descripcion}">Descripción del servicio</p>
+                    </div>
+
+                    <div class="service-features">
+                        <span class="service-guarantee" th:text="|🛡 ${servicio.garantia} meses garantía|"
+                              th:if="${servicio.garantia > 0}">
+                            🛡 Garantía incluida
+                        </span>
+                        <span class="service-category" th:text="${servicio.categoria}">
+                            Categoría
+                        </span>
+                    </div>
+
+                    <div class="service-actions" role="group" aria-label="Acciones para servicio ${servicio.nombre}">
+                        <button class="btn-primary btn-full"
+                                th:attr="data-id=${servicio.id},
+                    data-name=${servicio.nombre},
+                    data-price=${servicio.precio}"
+                                aria-label="Solicitar ${servicio.nombre}"
+                                onclick="serviceManager.requestService(this)">
+                            <span class="btn-text">Solicitar Servicio</span>
+                            <span class="btn-loading" style="display: none;">⌛ Procesando...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENSAJE SI NO HAY SERVICIOS -->
+        <div th:if="${#lists.isEmpty(servicios)}" class="no-services" role="alert" aria-live="polite">
+            <p>Actualmente no hay servicios disponibles.</p>
+            <a th:href="@{/contacto}" class="cta">Contáctanos para más información</a>
+        </div>
+    </section>
+
+    <!-- FORMULARIO DE SOLICITUD DE SERVICIO -->
+    <section class="service-link" id="service-request-form" style="display: none;">
+        <h2>Solicitar Servicio: <span id="selected-service-name"></span></h2>
+
+        <form th:action="@{/servicios/solicitar}" method="POST" class="service-request-form" id="service-form">
+            <input type="hidden" id="service-id" name="servicioId">
+            <input type="hidden" id="service-price" name="precio">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="cliente-nombre">Nombre Completo *</label>
+                    <input type="text" id="cliente-nombre" name="nombre" required
+                           placeholder="Ej: Juan Pérez García">
+                </div>
+                <div class="form-group">
+                    <label for="cliente-dni">DNI *</label>
+                    <input type="text" id="cliente-dni" name="dni" maxlength="8" required
+                           placeholder="8 dígitos">
+                </div>
+                <div class="form-group">
+                    <label for="cliente-telefono">Teléfono *</label>
+                    <input type="tel" id="cliente-telefono" name="telefono" required
+                           placeholder="Ej: 960 805 566">
+                </div>
+                <div class="form-group">
+                    <label for="cliente-email">Email *</label>
+                    <input type="email" id="cliente-email" name="email" required
+                           placeholder="ejemplo@correo.com">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="dispositivo">Dispositivo a Reparar *</label>
+                    <select id="dispositivo" name="dispositivo" required>
+                        <option value="">Selecciona tu dispositivo</option>
+                        <option value="samsung_galaxy">Samsung Galaxy</option>
+                        <option value="iphone">iPhone</option>
+                        <option value="xiaomi">Xiaomi</option>
+                        <option value="huawei">Huawei</option>
+                        <option value="laptop_windows">Laptop Windows</option>
+                        <option value="macbook">MacBook</option>
+                        <option value="tablet">Tablet</option>
+                        <option value="otro">Otro dispositivo</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="problema-descripcion">Descripción del Problema *</label>
+                    <textarea id="problema-descripcion" name="descripcion" required
+                              placeholder="Describe detalladamente el problema de tu dispositivo..."
+                              rows="4"></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="fecha-cita">Fecha Preferida para la Cita *</label>
+                    <input type="date" id="fecha-cita" name="fechaCita" required
+                           min="">
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="form-actions">
+                        <button type="button" class="form-button secondary" onclick="serviceManager.cancelRequest()">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="form-button primary">
+                            ✅ Enviar Solicitud
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <!-- INFORMACIÓN ADICIONAL -->
+    <section class="service-info-section">
+        <h2>¿Por qué elegir nuestros servicios?</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-icon">🛡️</div>
+                <h3>Garantía Incluida</h3>
+                <p>Todos nuestros servicios incluyen garantía por escrito. Tu tranquilidad es nuestra prioridad.</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">⚡</div>
+                <h3>Reparaciones Rápidas</h3>
+                <p>La mayoría de reparaciones se completan el mismo día. Minimizamos tu tiempo de espera.</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">🔧</div>
+                <h3>Técnicos Certificados</h3>
+                <p>Nuestro equipo cuenta con certificaciones y experiencia en múltiples marcas.</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">💯</div>
+                <h3>Calidad Garantizada</h3>
+                <p>Usamos repuestos originales y de alta calidad. Resultados que duran.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER SEMÁNTICO MEJORADO -->
+<footer class="site-footer" role="contentinfo" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+    <div class="container">
+        <div class="footer-grid">
+            <div itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+                <a th:href="@{/}" class="brand" aria-label="TecnoAccesorios - Página principal">
+                    <img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios logo" class="logo-img" itemprop="logo">
+                    <span class="brand-text" itemprop="name">TecnoAccesorios</span>
+                </a>
+                <p itemprop="description">Reparaciones y accesorios - <span itemprop="addressLocality">Tarapoto</span></p>
+            </div>
+
+            <nav aria-label="Enlaces rápidos del sitio">
+                <h4>Enlaces</h4>
+                <a th:href="@{/servicios}">Servicios</a>
+                <a th:href="@{/tienda}">Tienda</a>
+                <a th:href="@{/nosotros}">Nosotros</a>
+                <a th:href="@{/contacto}">Contacto</a>
+            </nav>
+
+            <div itemprop="contactPoint" itemscope itemtype="https://schema.org/ContactPoint">
+                <h4>Contacto</h4>
+                <p>📞 <span itemprop="telephone">+51 960 805 566</span></p>
+                <p>📧 <span itemprop="email">TecnoAccesorios@gmail.com</span></p>
+                <meta itemprop="contactType" content="customer service">
+                <meta itemprop="areaServed" content="PE">
+                <meta itemprop="availableLanguage" content="Spanish">
+            </div>
+        </div>
+
+        <div class="copyright">
+            © 2025 <span itemprop="name">TecnoAccesorios</span>. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+
+<!-- MODAL DE REGISTRO REQUERIDO -->
+<div id="register-required-modal" class="modal-overlay" role="dialog" aria-labelledby="register-required-title" aria-modal="true" hidden>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="register-required-title">Registro Requerido</h2>
+            <button class="close-modal" aria-label="Cerrar modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Para solicitar nuestros servicios, necesitas tener una cuenta registrada.</p>
+            <p>El registro es rápido, gratuito y te permitirá hacer seguimiento de tus servicios.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="form-button secondary" onclick="serviceManager.closeRegisterModal()">
+                Más Tarde
+            </button>
+            <button class="form-button primary" onclick="window.location.href='/registro'">
+                📝 Registrarse Ahora
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div id="service-confirm-modal" class="modal-overlay" role="dialog" aria-labelledby="service-confirm-title" aria-modal="true" hidden>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="service-confirm-title">¡Solicitud Enviada!</h2>
+            <button class="close-modal" aria-label="Cerrar modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Tu solicitud de servicio ha sido enviada correctamente.</p>
+            <p>Te contactaremos dentro de las próximas 2 horas para confirmar los detalles.</p>
+            <div class="service-summary">
+                <p><strong>Servicio:</strong> <span id="confirm-service-name"></span></p>
+                <p><strong>Precio estimado:</strong> <span id="confirm-service-price"></span></p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="form-button primary" onclick="serviceManager.closeConfirmModal()">
+                Aceptar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS PARA SERVICIOS -->
+<script th:src="@{/js/services.js}" defer></script>
+
+<script>
+    // Service Manager básico
+    const serviceManager = {
+        requestService(button) {
+            const serviceId = button.dataset.id;
+            const serviceName = button.dataset.name;
+            const servicePrice = button.dataset.price;
+
+            // Mostrar formulario
+            document.getElementById('selected-service-name').textContent = serviceName;
+            document.getElementById('service-id').value = serviceId;
+            document.getElementById('service-price').value = servicePrice;
+            document.getElementById('service-request-form').style.display = 'block';
+
+            // Scroll al formulario
+            document.getElementById('service-request-form').scrollIntoView({ behavior: 'smooth' });
+        },
+
+        cancelRequest() {
+            document.getElementById('service-request-form').style.display = 'none';
+            document.getElementById('service-form').reset();
+        },
+
+        showRegisterModal() {
+            document.getElementById('register-required-modal').hidden = false;
+        },
+
+        closeRegisterModal() {
+            document.getElementById('register-required-modal').hidden = true;
+        },
+
+        closeConfirmModal() {
+            document.getElementById('service-confirm-modal').hidden = true;
+            this.cancelRequest();
+        }
+    };
+
+    // Configurar fecha mínima (hoy)
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fecha-cita').min = today;
+    });
+</script>
+</body>
+</html>

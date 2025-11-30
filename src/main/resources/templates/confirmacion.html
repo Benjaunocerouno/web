@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pedido Confirmado - TecnoAccesorios</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/confirmacion.css}">
+    <link rel="icon" th:href="@{/img/logo.jpg}" type="image/x-icon">
+</head>
+
+<body>
+<!-- HEADER -->
+<header class="site-header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="brand">
+            <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios" class="logo-img"></div>
+            <span class="brand-text">TecnoAccesorios</span>
+        </a>
+
+        <nav class="main-nav">
+            <a th:href="@{/}" class="nav-link">Inicio</a>
+            <a th:href="@{/servicios}" class="nav-link">Servicios</a>
+            <a th:href="@{/tienda}" class="nav-link">Tienda</a>
+            <a th:href="@{/nosotros}" class="nav-link">Nosotros</a>
+            <a th:href="@{/contacto}" class="nav-link">Contacto</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a th:href="@{/auth/login}" class="nav-link-login">Ingresar</a>
+            <a class="cta" th:href="@{/auth/registro}">Registrarse</a>
+        </div>
+    </div>
+</header>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container page-content">
+    <div class="confirmation-container">
+        <div class="confirmation-icon">✅</div>
+        <h1>¡Pedido Confirmado!</h1>
+
+        <div class="confirmation-details">
+            <p><strong>Gracias <span th:text="${nombreCliente}">Cliente</span> por tu compra</strong></p>
+            <p>Hemos recibido tu pedido correctamente.</p>
+
+            <div class="order-info">
+                <h3>Información de tu Pedido</h3>
+                <p><strong>Método de pago:</strong> <span th:text="${metodoPago}">Transferencia</span></p>
+                <p><strong>Fecha estimada de entrega:</strong> <span th:text="${fechaEntrega}">2-3 días hábiles</span></p>
+                <p><strong>Estado:</strong> <span class="status-pending">En preparación</span></p>
+            </div>
+
+            <div class="next-steps">
+                <h3>Próximos pasos</h3>
+                <ul>
+                    <li>Recibirás un correo de confirmación con los detalles</li>
+                    <li>Te contactaremos para coordinar la entrega</li>
+                    <li>Para consultas: WhatsApp +51 960 805 566</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="confirmation-actions">
+            <a th:href="@{/tienda}" class="cta-button">Seguir Comprando</a>
+            <a th:href="@{/}" class="secondary-button">Volver al Inicio</a>
+        </div>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <a th:href="@{/}" class="brand">
+                    <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios" class="logo-img"></div>
+                    <span class="brand-text">TecnoAccesorios</span>
+                </a>
+                <p>Reparaciones y accesorios - Tarapoto</p>
+            </div>
+            <div>
+                <h4>Enlaces</h4>
+                <a th:href="@{/servicios}">Servicios</a>
+                <a th:href="@{/tienda}">Tienda</a>
+                <a th:href="@{/nosotros}">Nosotros</a>
+                <a th:href="@{/contacto}">Contacto</a>
+            </div>
+            <div>
+                <h4>Contacto</h4>
+                <p>📞 +51 960 805 566</p>
+                <p>📧 TecnoAccesorios@gmail.com</p>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 TecnoAccesorios. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+</body>
+</html>

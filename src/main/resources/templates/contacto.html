@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TecnoAccesorios - Contacto</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="icon" th:href="@{/img/logo.jpg}" type="image/x-icon">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a th:href="@{/}" class="brand">
+      <div class="logo"><img th:src="@{/img/logo.jpg}" alt="Logo" class="logo-img"></div>
+      <span class="brand-text">TecnoAccesorios</span>
+    </a>
+    <nav class="main-nav">
+      <a th:href="@{/}" class="nav-link">Inicio</a>
+      <a th:href="@{/servicios}" class="nav-link">Servicios</a>
+      <a th:href="@{/tienda}" class="nav-link">Tienda</a>
+      <a th:href="@{/nosotros}" class="nav-link">Nosotros</a>
+      <a th:href="@{/contacto}" class="nav-link active">Contacto</a>
+    </nav>
+    <div class="nav-actions">
+      <a th:href="@{/login}" class="nav-link-login">Ingresar</a> 
+      <a class="cta" th:href="@{/registro}">Registrarse</a> 
+    </div>
+  </div>
+</header>
+
+<main class="container page-content">
+  <h1>Contáctanos</h1>
+  
+  <div class="contact-grid">
+    <!-- Sección WhatsApp -->
+    <section class="contact-section whatsapp-section">
+      <div class="contact-icon">💬</div>
+      <h2>Chat Directo por WhatsApp</h2>
+      <p>¿Tienes dudas? Habla directamente con nuestros asesores. Estamos listos para ayudarte con consultas sobre servicios, productos o garantías.</p>
+      
+      <a href="https://wa.me/51960805566?text=Hola!%20Me%20gustaría%20hacer%20una%20consulta%20sobre%20TecnoAccesorios" 
+         class="whatsapp-button" 
+         target="_blank">
+        💬 Iniciar Chat en WhatsApp
+      </a>
+    </section>
+
+    <!-- Sección Formulario de Contacto -->
+    <section class="contact-section form-section">
+      <div class="contact-icon">📧</div>
+      <h2>Envíanos un Mensaje</h2>
+      <form th:action="@{/contacto/enviar}" method="post" class="contact-form">
+        <div class="form-group">
+          <label for="nombre">Nombre completo *</label>
+          <input type="text" id="nombre" name="nombre" required 
+                 placeholder="Tu nombre completo">
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required 
+                 placeholder="tu@email.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono" name="telefono" 
+                 placeholder="+51 XXX XXX XXX">
+        </div>
+        
+        <div class="form-group">
+          <label for="asunto">Asunto *</label>
+          <select id="asunto" name="asunto" required>
+            <option value="">Selecciona un asunto</option>
+            <option value="consulta">Consulta general</option>
+            <option value="reparacion">Servicio de reparación</option>
+            <option value="producto">Información de producto</option>
+            <option value="garantia">Consulta de garantía</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="mensaje">Mensaje *</label>
+          <textarea id="mensaje" name="mensaje" rows="5" required 
+                    placeholder="Describe tu consulta en detalle..."></textarea>
+        </div>
+        
+        <button type="submit" class="cta-button">Enviar Mensaje</button>
+      </form>
+    </section>
+
+    <!-- Sección Información de Contacto -->
+    <section class="contact-section info-section">
+      <div class="contact-icon">📍</div>
+      <h2>Información de Contacto</h2>
+      
+      <div class="contact-info">
+        <div class="contact-item">
+          <strong>📞 Teléfono:</strong>
+          <a href="tel:+51960805566">+51 960 805 566</a>
+        </div>
+        
+        <div class="contact-item">
+          <strong>📧 Email:</strong>
+          <a href="mailto:TecnoAccesorios@gmail.com">TecnoAccesorios@gmail.com</a>
+        </div>
+        
+        <div class="contact-item">
+          <strong>📍 Dirección:</strong>
+          <span>Jr. Ejemplo 123, Tarapoto, San Martín</span>
+        </div>
+        
+        <div class="contact-item">
+          <strong>🕒 Horario de atención:</strong>
+          <span>Lunes a Viernes: 8:00 AM - 6:00 PM<br>
+                Sábados: 9:00 AM - 2:00 PM</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a th:href="@{/}" class="brand">
+          <div class="logo"><img th:src="@{/img/logo.jpg}" alt="TecnoAccesorios logo" class="logo-img"></div>
+          <span class="brand-text">TecnoAccesorios</span>
+        </a>
+        <p>Reparaciones y accesorios - Tarapoto</p>
+      </div>
+      <div>
+        <h4>Enlaces</h4>
+        <a th:href="@{/servicios}">Servicios</a>
+        <a th:href="@{/tienda}">Tienda</a>
+        <a th:href="@{/nosotros}">Nosotros</a>
+        <a th:href="@{/contacto}">Contacto</a>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <p>📞 +51 960 805 566</p>
+        <p>📧 TecnoAccesorios@gmail.com</p>
+      </div>
+    </div>
+    <div class="copyright">
+      © 2025 TecnoAccesorios. Todos los derechos reservados.
+    </div>
+  </div>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>
