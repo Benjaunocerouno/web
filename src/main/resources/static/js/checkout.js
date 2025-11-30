@@ -107,9 +107,21 @@ function configurarMetodoPago() {
 }
 
 function configurarEnvioFormulario() {
-    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    const form = document.getElementById('checkout-form');
+    if (!form) return; // Validación de seguridad
+
+    form.addEventListener('submit', function(e) {
+        // 1. Obtener el total
         const totalText = document.getElementById('checkout-total').textContent;
         const total = totalText.replace('S/ ', '').trim();
         document.getElementById('total').value = total;
+
+        // 2. NUEVO: Copiar el carrito al input oculto
+        const carritoData = localStorage.getItem('tecnoaccesorios_cart');
+        const cartDataInput = document.getElementById('cartData');
+        
+        if (cartDataInput) {
+            cartDataInput.value = carritoData || '[]'; // Enviar array vacío si no hay datos
+        }
     });
 }
