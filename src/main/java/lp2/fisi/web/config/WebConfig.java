@@ -7,3 +7,5 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("lp2.fisi.web.controller")
 public class WebConfig {
 }
+
+/*hola */
