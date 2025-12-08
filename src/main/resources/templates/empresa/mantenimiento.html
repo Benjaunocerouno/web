@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenimiento | TechAdmin</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <a th:href="@{/admin/dashboard}">Tech<span>Admin</span></a>
+        </div>
+
+        <div class="nav-menu" id="navMenu">
+            <ul class="nav-links">
+                <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/admin/usuarios}">Usuarios</a></li>
+                <li><a th:href="@{/admin/inventario}">Inventario</a></li>
+                <li><a th:href="@{/admin/servicios}">Servicios</a></li>
+                <li><a th:href="@{/admin/mantenimiento}" class="active">Mantenimiento</a></li>
+                <li><a th:href="@{/admin/reportes}">Reportes</a></li>
+            </ul>
+
+            <div class="auth-buttons">
+                <div style="text-align:right; color:white;">
+                    <span style="font-weight:bold;" th:text="${session.usuario.nombres}">Admin</span>
+                    <small style="display:block; color:#aaa; font-size:0.75rem;" th:text="${session.usuario.tipoUsuario.nombreRol}">Rol</small>
+                </div>
+
+                <a th:href="@{/logout}" class="btn btn-outline" style="border-color:#ef4444; color:#ef4444; padding:5px 10px;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="burger" id="burgerBtn">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- MENSAJES -->
+    <div style="max-width:1400px; margin:20px auto; padding:0 20px;" th:if="${exito != null}">
+        <div style="background:#dcfce7; color:#166534; padding:15px; border-radius:8px;">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${exito}"></span>
+        </div>
+    </div>
+
+    <div style="max-width:1400px; margin:20px auto; padding:0 20px;" th:if="${error != null}">
+        <div style="background:#fee2e2; color:#991b1b; padding:15px; border-radius:8px;">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${error}"></span>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="maint-container">
+
+        <!-- SIDEBAR -->
+        <aside class="settings-nav">
+            <button class="nav-btn active" onclick="showSection('empresa', this)"><i class="fas fa-building"></i> Empresa</button>
+            <button class="nav-btn" onclick="showSection('perfil', this)"><i class="fas fa-user-circle"></i> Mi Perfil</button>
+            <button class="nav-btn" onclick="showSection('proveedores', this)"><i class="fas fa-truck"></i> Proveedores</button>
+            <button class="nav-btn" onclick="showSection('compras', this)"><i class="fas fa-shopping-cart"></i> Compras</button>
+        </aside>
+
+        <!-- CONTENIDO -->
+        <main class="settings-content">
+
+            <!-- EMPRESA -->
+            <div id="sec-empresa" class="section-panel active">
+                <h2>Configuración de Empresa</h2>
+                <hr>
+
+                <form th:action="@{/admin/mantenimiento/empresa/guardar}" method="post" th:object="${empresa}">
+                    <input type="hidden" th:field="*{idempresa}">
+
+                    <div class="form-grid">
+                        <div><label>Nombre Comercial</label><input type="text" th:field="*{nombre}" required></div>
+                        <div><label>Dirección</label><input type="text" th:field="*{direccion}"></div>
+                        <div><label>Email Contacto</label><input type="email" th:field="*{emailContacto}"></div>
+                        <div><label>Teléfono</label><input type="text" th:field="*{telefonoMostrar}"></div>
+                        <div><label>WhatsApp</label><input type="text" th:field="*{numeroWhatsapp}"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-filled" style="margin-top:20px;">Guardar Cambios</button>
+                </form>
+            </div>
+
+            <!-- PERFIL -->
+            <div id="sec-perfil" class="section-panel">
+                <h2>Mi Perfil</h2>
+                <hr>
+
+                <form th:action="@{/admin/mantenimiento/perfil/guardar}" method="post" th:object="${usuario}">
+                    <div class="form-grid">
+                        <div><label>Usuario</label><input type="text" th:field="*{username}" readonly style="background:#f1f5f9;"></div>
+                        <div><label>Nombres</label><input type="text" th:field="*{nombres}"></div>
+                        <div><label>Email</label><input type="email" th:field="*{email}" readonly style="background:#f1f5f9;"></div>
+                        <div><label>Teléfono</label><input type="text" th:field="*{telefono}"></div>
+                        <div><label>Nueva Contraseña</label><input type="password" name="contrasena" placeholder="********"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-filled" style="margin-top:20px;">Actualizar Perfil</button>
+                </form>
+            </div>
+
+            <!-- PROVEEDORES -->
+            <div id="sec-proveedores" class="section-panel">
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>Proveedores</h2>
+                    <button type="button" class="btn btn-outline" onclick="limpiarFormProveedor()">
+                        <i class="fas fa-eraser"></i> Limpiar
+                    </button>
+                </div>
+
+                <hr>
+
+                <!-- FORM PROVEEDOR -->
+                <div style="background:#f8fafc; padding:20px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:30px;">
+                    <h4 id="form-title" style="color:#475569;">Registrar Nuevo Proveedor</h4>
+
+                    <form th:action="@{/admin/mantenimiento/proveedor/guardar}" method="post" th:object="${nuevoProveedor}">
+                        <input type="hidden" th:field="*{idproveedor}" id="prov_id">
+
+                        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
+                            <div><label>RUC</label><input type="text" th:field="*{ruc}" id="prov_ruc" required></div>
+                            <div><label>Razón Social</label><input type="text" th:field="*{razonSocial}" id="prov_razon" required></div>
+                            <div><label>Teléfono</label><input type="text" th:field="*{telefono}" id="prov_tel"></div>
+                            <div><label>Email</label><input type="email" th:field="*{email}" id="prov_email"></div>
+                            <div style="grid-column: span 2;">
+                                <label>Dirección</label><input type="text" th:field="*{direccion}" id="prov_dir">
+                            </div>
+                        </div>
+
+                        <div style="margin-top:15px;">
+                            <button type="submit" class="btn btn-sm" style="background:#2563eb; color:white;">
+                                <i class="fas fa-save"></i> Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- TABLA PROVEEDORES -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>RUC</th>
+                            <th>Razón Social</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="prov : ${proveedores}">
+                            <td th:text="${prov.ruc}"></td>
+                            <td th:text="${prov.razonSocial}"></td>
+                            <td th:text="${prov.telefono}"></td>
+                            <td th:text="${prov.email}"></td>
+                            <td>
+                                <button type="button" class="btn-action btn-edit"
+                                        th:onclick="editarProveedor([[${prov.idproveedor}]], [[${prov.ruc}]], [[${prov.razonSocial}]], [[${prov.telefono}]], [[${prov.email}]], [[${prov.direccion}]])">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+
+                                <a th:href="@{/admin/mantenimiento/proveedor/eliminar/{id}(id=${prov.idproveedor})}"
+                                   class="btn-action btn-delete"
+                                   onclick="return confirm('¿Seguro que deseas eliminar este proveedor?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(proveedores)}">
+                            <td colspan="5" style="text-align:center; padding:20px; color:#888;">No hay proveedores registrados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- COMPRAS -->
+            <div id="sec-compras" class="section-panel">
+                <h2 style="color:#1e293b;">Gestión de Compras</h2>
+                <hr>
+
+                <div style="background:#f0fdf4; padding:20px; border-radius:8px; border:1px solid #bbf7d0; margin-bottom:30px;">
+                    <h4 style="color:#166534;">Registrar Nueva Compra</h4>
+
+                    <form th:action="@{/admin/mantenimiento/compra/guardar}" method="post" th:object="${nuevaCompra}">
+                        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
+                            <div>
+                                <label>Proveedor</label>
+                                <select th:field="*{proveedor}" required>
+                                    <option value="">Seleccione...</option>
+                                    <option th:each="p : ${proveedores}"
+                                            th:value="${p.idproveedor}"
+                                            th:text="${p.razonSocial}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label>N° Comprobante</label>
+                                <input type="text" th:field="*{numeroComprobante}" placeholder="F001-000..." required>
+                            </div>
+
+                            <div>
+                                <label>Monto Total (S/)</label>
+                                <input type="number" step="0.01" th:field="*{montoTotal}" placeholder="0.00" required>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:15px;">
+                            <button type="submit" class="btn btn-sm" style="background:#16a34a; color:white;">
+                                <i class="fas fa-check"></i> Registrar Compra
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <h4 style="margin-bottom:10px; color:#475569;">Historial de Compras</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Proveedor</th>
+                            <th>Comprobante</th>
+                            <th>Responsable</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="c : ${compras}">
+                            <td th:text="${c.idcompra}"></td>
+                            <td th:text="${#temporals.format(c.fechaCompra, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${c.proveedor.razonSocial}"></td>
+                            <td th:text="${c.numeroComprobante}"></td>
+                            <td th:text="${c.usuario.nombres}"></td>
+                            <td><strong>S/ <span th:text="${#numbers.formatDecimal(c.montoTotal, 1, 2)}"></span></strong></td>
+                            <td>
+                                <span class="badge badge-active" style="background:#e0e7ff; color:#3730a3;"
+                                      th:text="${c.estado}">
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(compras)}">
+                            <td colspan="7" style="text-align:center; padding:30px; color:#888;">No hay compras registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>
