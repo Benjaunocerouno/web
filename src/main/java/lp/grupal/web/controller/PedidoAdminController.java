@@ -2,24 +2,14 @@ package lp.grupal.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
-import lp.grupal.web.model.Usuario;
-import lp.grupal.web.model.Venta;
-import lp.grupal.web.model.DetallePedido;
-import lp.grupal.web.model.DetalleVenta;
-import lp.grupal.web.model.Pedido;
-import lp.grupal.web.model.dao.IDetalleVentaDAO;
-import lp.grupal.web.model.dao.IPedidoDAO;
-import lp.grupal.web.model.dao.IVentaDAO;
-
-import org.springframework.web.bind.annotation.PathVariable; 
-import org.springframework.web.bind.annotation.PostMapping;  
-import org.springframework.web.servlet.mvc.support.RedirectAttributes; 
-
+import lp.grupal.web.model.*;
+import lp.grupal.web.model.dao.*;
 
 import java.util.List;
 
@@ -27,93 +17,150 @@ import java.util.List;
 @RequestMapping("/admin/pedidos-web")
 public class PedidoAdminController {
 
+    @Autowired private IPedidoDAO pedidoDAO;
     @Autowired private IVentaDAO ventaDAO;
     @Autowired private IDetalleVentaDAO detalleVentaDAO;
+    @Autowired private ICajaDAO cajaDAO; 
 
-    @Autowired
-    private IPedidoDAO pedidoDAO;
+    // 1. LISTAR PEDIDOS
+    @GetMapping
+    public String listarPedidosPendientes(Model model, HttpSession session) {
+        if (!validarAcceso(session)) return "redirect:/login";
 
-    @GetMapping("/atender/{id}")
-    public String atenderPedido(@PathVariable("id") Integer idPedido, HttpSession session, RedirectAttributes flash) {
+        List<Pedido> pedidosPendientes = pedidoDAO.findByEstadoOrderByFechaPedidoDesc("PENDIENTE");
+        model.addAttribute("pedidos", pedidosPendientes);
+        return "empresa/pedidos_web"; 
+    }
+
+    // 2. REVISAR Y PRE-LLENAR DATOS
+    @GetMapping("/revisar/{id}")
+    public String revisarPedido(@PathVariable("id") Integer idPedido, Model model, HttpSession session, RedirectAttributes flash) {
+        if (!validarAcceso(session)) return "redirect:/login";
+
+        Pedido pedido = pedidoDAO.findById(idPedido).orElse(null);
+        if (pedido == null || !pedido.getEstado().equals("PENDIENTE")) {
+            flash.addFlashAttribute("error", "El pedido no existe o ya fue atendido.");
+            return "redirect:/admin/pedidos-web";
+        }
+
+        model.addAttribute("pedido", pedido);
         
-        // 1. Validar Seguridad (Admin/Vendedor)
+        // --- LOGICA PARA PRE-LLENAR DATOS ---
+        // Por defecto sugerimos BOLETA y calculamos el siguiente número
+        String siguienteNumero = generarSiguienteNumero("BOLETA", "B001");
+        
+        model.addAttribute("serieSugerida", "B001");
+        model.addAttribute("numeroSugerido", siguienteNumero);
+        
+        return "empresa/atender_pedido"; 
+    }
+
+    // 3. PROCESAR VENTA (CON TRANSACCIÓN)
+    @PostMapping("/procesar")
+    @Transactional
+    public String procesarVenta(@RequestParam("idPedido") Integer idPedido,
+                                @RequestParam("tipoComprobante") String tipoComprobante,
+                                @RequestParam("serieComprobante") String serieComprobante,
+                                @RequestParam("numComprobante") String numComprobante, 
+                                HttpSession session, 
+                                RedirectAttributes flash) {
+        
         Usuario usuarioAdmin = (Usuario) session.getAttribute("usuario");
         if (usuarioAdmin == null) return "redirect:/login";
-
-        // 2. Buscar el Pedido
-        Pedido pedido = pedidoDAO.findById(idPedido).orElse(null);
-        if (pedido == null) {
-            flash.addFlashAttribute("error", "El pedido no existe.");
-            return "redirect:/admin/pedidos-web";
-        }
-
-        if (!pedido.getEstado().equals("PENDIENTE")) {
-            flash.addFlashAttribute("error", "El pedido ya fue procesado anteriormente.");
-            return "redirect:/admin/pedidos-web";
-        }
-
+        
         try {
-            // 3. Crear la VENTA (Cabecera) basándonos en el Pedido
-            Venta nuevaVenta = new Venta();
-            nuevaVenta.setUsuario(pedido.getUsuario()); 
-            nuevaVenta.setEstado("COMPLETADO");
-            nuevaVenta.setMonto_total(pedido.getMontoEstimado());
-            nuevaVenta.setDireccion_envio(pedido.getObservacionesCliente()); 
-            nuevaVenta.setTipo_comprobante("BOLETA"); 
+            Pedido pedido = pedidoDAO.findById(idPedido).orElse(null);
             
-            // Guardamos la venta para generar el ID
-            Venta ventaGuardada = ventaDAO.save(nuevaVenta);
-
-            // 4. Copiar Detalles (De DetallePedido a DetalleVenta)
-            for (DetallePedido dp : pedido.getDetalles()) {
-                DetalleVenta dv = new DetalleVenta();
-                dv.setVenta(ventaGuardada);
-                dv.setProducto(dp.getProducto());
-                dv.setCantidad(dp.getCantidad());
-                dv.setPrecioUnitario(dp.getPrecioReferencial());
-                
-                // Guardamos el detalle
-                detalleVentaDAO.save(dv);
+            // Validación de seguridad por si otro admin ya lo atendió
+            if (pedido == null || !pedido.getEstado().equals("PENDIENTE")) { 
+                 flash.addFlashAttribute("error", "Error: El pedido ya no está pendiente.");
+                 return "redirect:/admin/pedidos-web";
             }
 
-            // 5. Actualizar el PEDIDO Original
+            // A. Crear la VENTA (Cabecera)
+            Venta nuevaVenta = new Venta();
+            nuevaVenta.setUsuario(pedido.getUsuario());
+            nuevaVenta.setEmpleado(usuarioAdmin);
+            nuevaVenta.setEstado("COMPLETADO");
+            nuevaVenta.setMonto_total(pedido.getMontoEstimado());
+            nuevaVenta.setDireccion_envio(pedido.getObservacionesCliente());
+            
+            // Datos del comprobante recibidos del formulario
+            nuevaVenta.setTipo_comprobante(tipoComprobante);
+            nuevaVenta.setSerie_comprobante(serieComprobante);
+            nuevaVenta.setNum_comprobante(numComprobante); 
+            
+            // Guardamos la venta primero para obtener su ID
+            Venta ventaGuardada = ventaDAO.save(nuevaVenta);
+            
+            // B. Copiar Detalles (De Pedido a Venta)
+            for (DetallePedido dp : pedido.getDetalles()) {
+                 DetalleVenta dv = new DetalleVenta();
+                 dv.setVenta(ventaGuardada);
+                 dv.setProducto(dp.getProducto());
+                 dv.setCantidad(dp.getCantidad());
+                 dv.setPrecioUnitario(dp.getPrecioReferencial());
+                 
+                 // Esto disparará el Trigger en BD para descontar stock (asegúrate de haber borrado la resta manual en VentaController)
+                 detalleVentaDAO.save(dv);
+            }
+            
+            // C. Actualizar el Estado del PEDIDO
             pedido.setEstado("APROBADO");
-            pedido.setIdVentaGenerada(ventaGuardada.getIdventa()); // ¡Aquí vinculamos!
-            pedido.setIdVendedorRevisor(usuarioAdmin.getIdusuario()); // Guardamos quién lo aprobó
+            pedido.setIdVentaGenerada(ventaGuardada.getIdventa());
+            pedido.setIdVendedorRevisor(usuarioAdmin.getIdusuario());
             pedidoDAO.save(pedido);
 
-            flash.addFlashAttribute("exito", "Pedido #" + idPedido + " aprobado. Se generó la Venta #" + ventaGuardada.getIdventa());
+            // D. Registrar el Ingreso en CAJA
+            Caja movimiento = new Caja();
+            movimiento.setTipoMovimiento("INGRESO");
+            movimiento.setConcepto("Venta Web #" + ventaGuardada.getIdventa() + " - " + tipoComprobante + " " + serieComprobante + "-" + numComprobante);
+            movimiento.setMonto(pedido.getMontoEstimado());
+            // Asumimos transferencia porque es web, o puedes agregar un campo en el formulario para esto
+            movimiento.setMetodoPago("WEB/TRANSFERENCIA"); 
+            movimiento.setVenta(ventaGuardada);
+            movimiento.setPedido(pedido);
+            movimiento.setEmpresa(usuarioAdmin.getEmpresa());
+            movimiento.setUsuarioResponsable(usuarioAdmin);
+            
+            cajaDAO.save(movimiento);
+
+            flash.addFlashAttribute("exito", "Venta procesada correctamente. Comprobante: " + serieComprobante + "-" + numComprobante);
 
         } catch (Exception e) {
             e.printStackTrace();
             flash.addFlashAttribute("error", "Error al procesar: " + e.getMessage());
+            // Al ser @Transactional, si falla aquí, se revierte todo (venta, detalles y caja).
         }
 
         return "redirect:/admin/pedidos-web";
     }
 
+    // Helper: Validar Rol
+    private boolean validarAcceso(HttpSession session) {
+        Usuario u = (Usuario) session.getAttribute("usuario");
+        return u != null && (u.getTipoUsuario().getNombreRol().equals("ADMIN") || 
+                             u.getTipoUsuario().getNombreRol().equals("VENDEDOR") || 
+                             u.getTipoUsuario().getNombreRol().equals("ADMIN_VENDEDOR"));
+    }
 
-
-    @GetMapping
-    public String listarPedidosPendientes(Model model, HttpSession session) {
+    // Helper: Generar Correlativo
+    private String generarSiguienteNumero(String tipo, String serie) {
+        // Busca el último número en la BD usando el DAO
+        String ultimo = ventaDAO.obtenerUltimoNumero(tipo, serie);
         
-        // 1. SEGURIDAD: Verificar sesión y rol
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
-
-        String rol = usuario.getTipoUsuario().getNombreRol();
-        if (!rol.equals("ADMIN") && !rol.equals("VENDEDOR") && !rol.equals("ADMIN_VENDEDOR")) {
-            return "redirect:/"; // Si no es personal autorizado, fuera
+        int numeroSiguiente = 1; // Por defecto empezamos en 1
+        
+        if (ultimo != null) {
+            try {
+                // Intenta convertir el string (ej: "000045") a entero y suma 1
+                numeroSiguiente = Integer.parseInt(ultimo) + 1;
+            } catch (NumberFormatException e) {
+                numeroSiguiente = 1;
+            }
         }
-
-        // 2. OBTENER DATOS
-        // Usamos el método que acabamos de crear en el DAO
-        List<Pedido> pedidosPendientes = pedidoDAO.findByEstadoOrderByFechaPedidoDesc("PENDIENTE");
-
-        // 3. ENVIAR A LA VISTA
-        model.addAttribute("pedidos", pedidosPendientes);
         
-        // Retornamos la plantilla HTML que crearemos a continuación
-        return "empresa/pedidos_web"; 
+        // Formatea a 6 dígitos con ceros a la izquierda (Ej: 1 -> "000001")
+        return String.format("%06d", numeroSiguiente);
     }
 }

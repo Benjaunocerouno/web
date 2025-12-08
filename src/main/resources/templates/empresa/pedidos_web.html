@@ -98,11 +98,11 @@
                         </td>
                         
                         <td>
-                            <a th:href="@{/admin/pedidos-web/atender/{id}(id=${p.idpedido})}" 
-                            class="btn btn-sm" 
-                            style="background: #2563eb; color: white;" 
-                            onclick="return confirm('¿Confirmar que el pago es correcto y generar la venta?');">
-                                <i class="fas fa-check"></i> Atender
+                            <a th:href="@{/admin/pedidos-web/revisar/{id}(id=${p.idpedido})}" 
+                                class="btn btn-sm" 
+                                style="background: #2563eb; color: white;" 
+                                title="Revisar y Facturar">
+                                <i class="fas fa-file-signature"></i> Atender
                             </a>
                             
                             <a href="#" class="btn btn-sm" style="background: #fee2e2; color: #dc2626;">

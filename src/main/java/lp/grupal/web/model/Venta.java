@@ -51,6 +51,10 @@ public class Venta {
         if (tipo_comprobante == null) tipo_comprobante = "BOLETA";
     }
 
+    @ManyToOne
+    @JoinColumn(name = "id_empleado") // Relación con la columna de tu BD
+    private Usuario empleado;
+
     // --- GETTERS Y SETTERS ---
 
     public Integer getIdventa() {
@@ -157,6 +161,14 @@ public class Venta {
 
     public void setDetalles(List<DetalleVenta> detalles) {
         this.detalles = detalles;
+    }
+
+    public Usuario getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Usuario empleado) {
+        this.empleado = empleado;
     }
 
     @Override

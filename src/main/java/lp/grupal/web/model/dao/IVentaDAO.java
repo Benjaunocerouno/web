@@ -22,4 +22,9 @@ public interface IVentaDAO extends JpaRepository<Venta, Integer> {
                    "WHERE u.id_empresa = :idEmpresa AND v.fechaventa BETWEEN :inicio AND :fin " +
                    "GROUP BY u.idusuario", nativeQuery = true)
     List<Map<String, Object>> reporteVentasPorUsuario(@Param("idEmpresa") Integer idEmpresa, @Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
+
+
+    // NUEVO: Obtener el último número de comprobante registrado según el tipo
+    @Query("SELECT MAX(v.num_comprobante) FROM Venta v WHERE v.tipo_comprobante = :tipo AND v.serie_comprobante = :serie")
+    String obtenerUltimoNumero(@Param("tipo") String tipo, @Param("serie") String serie);
 }

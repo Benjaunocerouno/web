@@ -88,9 +88,11 @@ public class VentaController {
                     detalles.add(det);
                     totalCalculado += (prodBD.getPrecio() * item.cantidad);
                     
-                    // Restar Stock (Opcional, pero recomendado)
+                    /*
                     prodBD.setStock(prodBD.getStock() - item.cantidad);
                     productoDAO.save(prodBD);
+                    */
+                    
                 }
             }
         }
