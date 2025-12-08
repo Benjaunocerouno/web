@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import lp.grupal.web.model.Usuario;
 import lp.grupal.web.model.Servicio;
 import lp.grupal.web.model.dao.IServicioDAO;
+import lp.grupal.web.model.dao.ICategoriaDAO; // IMPORTANTE: Importamos el DAO de categorías
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class ServicioAdminController {
 
     @Autowired private IServicioDAO servicioDAO;
+    @Autowired private ICategoriaDAO categoriaDAO; // INYECCIÓN: Necesaria para cargar el combo
 
     // LISTAR
     @GetMapping
@@ -33,7 +35,7 @@ public class ServicioAdminController {
 
         model.addAttribute("servicios", servicios);
         model.addAttribute("palabraClave", buscar);
-        return "empresa/servicios_admin"; // HTML de la lista
+        return "empresa/servicios_admin"; 
     }
 
     // NUEVO
@@ -42,8 +44,10 @@ public class ServicioAdminController {
         if (!validarAcceso(session)) return "redirect:/login";
 
         model.addAttribute("servicio", new Servicio());
+        // CORRECCIÓN: Enviamos la lista de categorías a la vista
+        model.addAttribute("categorias", categoriaDAO.findByActivoTrue()); 
         model.addAttribute("titulo", "Nuevo Servicio");
-        return "empresa/form_servicio"; // HTML del formulario
+        return "empresa/form_servicio"; 
     }
 
     // EDITAR
@@ -58,6 +62,8 @@ public class ServicioAdminController {
         }
 
         model.addAttribute("servicio", serv);
+        // CORRECCIÓN: También enviamos las categorías al editar
+        model.addAttribute("categorias", categoriaDAO.findByActivoTrue());
         model.addAttribute("titulo", "Editar Servicio");
         return "empresa/form_servicio";
     }
@@ -69,6 +75,13 @@ public class ServicioAdminController {
 
         try {
             if(servicio.getActivo() == null) servicio.setActivo(true);
+            
+            // VALIDACIÓN: Verificar que se haya seleccionado una categoría
+            if(servicio.getIdcategoria() == null) {
+                flash.addFlashAttribute("error", "Error: La categoría es obligatoria.");
+                return "redirect:/admin/servicios/nuevo";
+            }
+
             servicioDAO.save(servicio);
             flash.addFlashAttribute("exito", "Servicio guardado correctamente.");
         } catch (Exception e) {
