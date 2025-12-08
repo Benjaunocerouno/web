@@ -23,25 +23,35 @@ public class Venta {
 
     @ManyToOne
     @JoinColumn(name = "id_cliente")
-    private Usuario usuario; // El cliente que compró
+    private Usuario usuario; 
 
     private LocalDateTime fechaventa;
-    private String estado; // PENDIENTE, PAGADO, ETC.
+    private String estado; 
     private Double monto_total;
     private String direccion_envio;
     private String ciudad_envio;
     private String referencia_envio;
     private String telefono_contacto;
 
-    // Relación para guardar los detalles automáticamente
+    // --- NUEVOS CAMPOS AGREGADOS ---
+    // (Deben coincidir con los nombres en tu base de datos)
+    private String tipo_comprobante;
+    private String serie_comprobante;
+    private String num_comprobante;
+
+    // Relación con los detalles
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
     private List<DetalleVenta> detalles;
 
     @PrePersist
     public void prePersist() {
         fechaventa = LocalDateTime.now();
-        estado = "PENDIENTE";
+        // Valor por defecto si no se asigna antes
+        if (estado == null) estado = "PENDIENTE";
+        if (tipo_comprobante == null) tipo_comprobante = "BOLETA";
     }
+
+    // --- GETTERS Y SETTERS ---
 
     public Integer getIdventa() {
         return idventa;
@@ -83,14 +93,6 @@ public class Venta {
         this.monto_total = monto_total;
     }
 
-    public List<DetalleVenta> getDetalles() {
-        return detalles;
-    }
-
-    public void setDetalles(List<DetalleVenta> detalles) {
-        this.detalles = detalles;
-    }
-
     public String getDireccion_envio() {
         return direccion_envio;
     }
@@ -123,11 +125,43 @@ public class Venta {
         this.telefono_contacto = telefono_contacto;
     }
 
+    // --- GETTERS Y SETTERS NUEVOS ---
+    public String getTipo_comprobante() {
+        return tipo_comprobante;
+    }
+
+    public void setTipo_comprobante(String tipo_comprobante) {
+        this.tipo_comprobante = tipo_comprobante;
+    }
+
+    public String getSerie_comprobante() {
+        return serie_comprobante;
+    }
+
+    public void setSerie_comprobante(String serie_comprobante) {
+        this.serie_comprobante = serie_comprobante;
+    }
+
+    public String getNum_comprobante() {
+        return num_comprobante;
+    }
+
+    public void setNum_comprobante(String num_comprobante) {
+        this.num_comprobante = num_comprobante;
+    }
+    // --------------------------------
+
+    public List<DetalleVenta> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetalleVenta> detalles) {
+        this.detalles = detalles;
+    }
+
     @Override
     public String toString() {
         return "Venta [idventa=" + idventa + ", usuario=" + usuario + ", fechaventa=" + fechaventa + ", estado="
-                + estado + ", monto_total=" + monto_total + ", direccion_envio=" + direccion_envio + ", ciudad_envio="
-                + ciudad_envio + ", referencia_envio=" + referencia_envio + ", telefono_contacto=" + telefono_contacto
-                + ", detalles=" + detalles + "]";
+                + estado + ", monto_total=" + monto_total + ", tipo_comprobante=" + tipo_comprobante + "]";
     }
 }
